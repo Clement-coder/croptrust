@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X, Home, Info, ShoppingCart, Phone, ExternalLink } from "lucide-react";
 
-import { connectWallet } from "../utils/hedera";
+import { initHashConnect, connectToHashpack, disconnectFromHashpack, checkHashpackConnection } from "../utils/hedera";
 
 const navLinks = [
   { name: "Home", href: "/", icon: <Home className="w-5 h-5" /> },
@@ -18,28 +18,21 @@ const Navbar: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      setScrolled(scrollTop > 50);
+    const init = async () => {
+      await initHashConnect();
+      const connected = await checkHashpackConnection();
+      setIsConnected(connected);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", handleScroll);
-    handleScroll(); // initial check
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
-    };
+    init();
   }, []);
 
   const handleConnectWallet = async () => {
-    try {
-      await connectWallet();
-      setIsConnected(true);
-    } catch (error) {
-      console.error("Failed to connect wallet:", error);
-    }
+    await connectToHashpack(setIsConnected);
+  };
+
+  const handleDisconnectWallet = async () => {
+    await disconnectFromHashpack(setIsConnected);
   };
 
   return (
@@ -73,7 +66,14 @@ const Navbar: React.FC = () => {
             </a>
           ))}
 
-          {!isConnected && (
+          {isConnected ? (
+            <button
+              onClick={handleDisconnectWallet}
+              className="px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700"
+            >
+              Disconnect Wallet
+            </button>
+          ) : (
             <button
               onClick={handleConnectWallet}
               className="px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700"
@@ -143,7 +143,14 @@ const Navbar: React.FC = () => {
 
           {/* Mobile Web3 Button */}
           <div className="flex justify-center mt-4">
-            {!isConnected && (
+            {isConnected ? (
+              <button
+                onClick={handleDisconnectWallet}
+                className="px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700"
+              >
+                Disconnect Wallet
+              </button>
+            ) : (
               <button
                 onClick={handleConnectWallet}
                 className="px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700"

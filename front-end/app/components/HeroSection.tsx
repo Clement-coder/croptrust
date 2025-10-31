@@ -1,23 +1,9 @@
-"use client";
-
 import React from 'react';
 import { ArrowRight, Shield, DollarSign, Wheat, Star, CheckCircle, ArrowLeftRight, Zap } from 'lucide-react';
 import styles from './HeroSection.module.css';
-import { connectWallet } from '../utils/hedera';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 function HeroSection() {
-  const router = useRouter();
-
-  const handleGetStarted = async () => {
-    try {
-      await connectWallet();
-      router.push('/dashboard');
-    } catch (error) {
-      console.error("Failed to connect wallet:", error);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 relative overflow-hidden">
       {/* Background Image with Overlay */}
@@ -66,23 +52,25 @@ function HeroSection() {
               Farmers get fair prices. Buyers get transparent, fresh produce straight from the source.
             </p>
 
-            <button onClick={handleGetStarted} className="relative w-full cursor-pointer overflow-hidden group">
-              {/* Main Button */}
-              <div className={`relative z-10 w-full px-10 py-4 bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 
-                rounded-xl flex items-center justify-center gap-3 text-white font-bold tracking-wide 
-                shadow-xl transition-all duration-500 transform border-2 border-green-400/30
-              `}>
-                {/* Button text */}
-                <span className="relative z-10 text-lg font-bold tracking-wider drop-shadow-lg">
-                  GET STARTED
-                </span>
-                
-                {/* Animated Arrow */}
-                <div className="relative">
-                  <ArrowRight className={`w-6 h-6 text-white transition-all duration-300 drop-shadow-lg`} />
+            <Link href="/dashboard">
+              <button className="relative w-full cursor-pointer overflow-hidden group">
+                {/* Main Button */}
+                <div className={`relative z-10 w-full px-10 py-4 bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 
+                  rounded-xl flex items-center justify-center gap-3 text-white font-bold tracking-wide 
+                  shadow-xl transition-all duration-500 transform border-2 border-green-400/30
+                `}>
+                  {/* Button text */}
+                  <span className="relative z-10 text-lg font-bold tracking-wider drop-shadow-lg">
+                    GET STARTED
+                  </span>
+                  
+                  {/* Animated Arrow */}
+                  <div className="relative">
+                    <ArrowRight className={`w-6 h-6 text-white transition-all duration-300 drop-shadow-lg`} />
+                  </div>
                 </div>
-              </div>
-            </button>
+              </button>
+            </Link>
 
 
             {/* CTA Style Box */}

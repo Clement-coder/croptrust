@@ -1,14 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardNavBar from "../components/DashboardNavBar";
 import FarmerDashboard from "../components/dashboard/FarmerDashboard";
 import BuyerDashboard from "../components/dashboard/BuyerDashboard";
 import RegistrationForm from "../components/registration/RegistrationForm";
+import { checkHashpackConnection } from "../utils/hedera";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("farmer");
   const [isRegistered, setIsRegistered] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      const connected = await checkHashpackConnection();
+      setIsConnected(connected);
+    };
+
+    checkConnection();
+  }, []);
 
   // Dummy data for a user who is both a farmer and a buyer
   const dummyUser = {
@@ -27,7 +38,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <DashboardNavBar isRegistered={isRegistered} />
+      <DashboardNavBar isRegistered={isRegistered} isConnected={isConnected} />
       <main className="container mx-auto p-6">
         <div className="mb-8">
           <div className="flex border-b border-gray-300">

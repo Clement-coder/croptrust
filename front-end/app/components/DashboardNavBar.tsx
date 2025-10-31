@@ -1,13 +1,13 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import { Menu, X, Home, ShoppingBag, LayoutDashboard, UserPlus, ExternalLink } from "lucide-react";
+import { initHashConnect, connectToHashpack, disconnectFromHashpack } from "../utils/hedera";
 
 interface DashboardNavbarProps {
   isRegistered: boolean;
+  isConnected: boolean;
 }
 
-const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ isRegistered }) => {
+const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ isRegistered, isConnected }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -34,7 +34,6 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ isRegistered }) => {
         },
       ];
 
-  // Scroll effect
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -50,6 +49,14 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ isRegistered }) => {
       window.removeEventListener("resize", handleScroll);
     };
   }, []);
+
+  const handleConnectWallet = async () => {
+    await connectToHashpack(() => {}); // setConnected is handled by Navbar.tsx
+  };
+
+  const handleDisconnectWallet = async () => {
+    await disconnectFromHashpack(() => {}); // setConnected is handled by Navbar.tsx
+  };
 
   return (
     <nav
@@ -81,6 +88,22 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ isRegistered }) => {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-400 transition-all duration-300 group-hover:w-full"></span>
             </a>
           ))}
+
+          {isConnected ? (
+            <button
+              onClick={handleDisconnectWallet}
+              className="px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700"
+            >
+              Disconnect Wallet
+            </button>
+          ) : (
+            <button
+              onClick={handleConnectWallet}
+              className="px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700"
+            >
+              Connect Wallet
+            </button>
+          )}
         </div>
 
         {/* Web3 Badge for Desktop */}
@@ -139,6 +162,25 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ isRegistered }) => {
             <span className={`text-sm font-medium transition-colors duration-300 ${scrolled ? "text-green-800" : "text-green-800"}`}>
               Web3 Powered
             </span>
+          </div>
+
+          {/* Mobile Web3 Button */}
+          <div className="flex justify-center mt-4">
+            {isConnected ? (
+              <button
+                onClick={handleDisconnectWallet}
+                className="px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700"
+              >
+                Disconnect Wallet
+              </button>
+            ) : (
+              <button
+                onClick={handleConnectWallet}
+                className="px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700"
+              >
+                Connect Wallet
+              </button>
+            )}
           </div>
         </div>
       </div>
