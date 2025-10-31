@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function RegistrationForm() {
+export default function RegistrationForm({ onRegister }: { onRegister: () => void }) {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -19,6 +19,7 @@ export default function RegistrationForm() {
     e.preventDefault();
     // TODO: Add logic to interact with the FarmerRegistry smart contract
     console.log(formData);
+    onRegister();
   };
 
   return (

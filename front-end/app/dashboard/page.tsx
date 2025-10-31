@@ -22,12 +22,12 @@ export default function Dashboard() {
   };
 
   if (!isRegistered) {
-    return <RegistrationForm />;
+    return <RegistrationForm onRegister={() => setIsRegistered(true)} />;
   }
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <DashboardNavBar />
+      <DashboardNavBar isRegistered={isRegistered} />
       <main className="container mx-auto p-6">
         <div className="mb-8">
           <div className="flex border-b border-gray-300">

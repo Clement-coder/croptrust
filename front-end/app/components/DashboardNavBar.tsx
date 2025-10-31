@@ -1,17 +1,38 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Menu, X, Home, ShoppingBag, LayoutDashboard, ExternalLink } from "lucide-react";
+import { Menu, X, Home, ShoppingBag, LayoutDashboard, UserPlus } from "lucide-react";
 
-const dashboardNavLinks = [
-  { name: "Home", href: "/dashboard", icon: <Home className="w-5 h-5" /> },
-  { name: "Marketplace", href: "/marketplace", icon: <ShoppingBag className="w-5 h-5" /> },
-  { name: "Dashboard", href: "/dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
-];
+interface DashboardNavbarProps {
+  isRegistered: boolean;
+}
 
-const DashboardNavbar: React.FC = () => {
+const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ isRegistered }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const navLinks = isRegistered
+    ? [
+        { name: "Home", href: "/", icon: <Home className="w-5 h-5" /> },
+        {
+          name: "Marketplace",
+          href: "/marketplace",
+          icon: <ShoppingBag className="w-5 h-5" />,
+        },
+        {
+          name: "Dashboard",
+          href: "/dashboard",
+          icon: <LayoutDashboard className="w-5 h-5" />,
+        },
+      ]
+    : [
+        { name: "Home", href: "/", icon: <Home className="w-5 h-5" /> },
+        {
+          name: "Register",
+          href: "/dashboard",
+          icon: <UserPlus className="w-5 h-5" />,
+        },
+      ];
 
   // Scroll effect
   useEffect(() => {
@@ -46,8 +67,7 @@ const DashboardNavbar: React.FC = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-8">
-          {dashboardNavLinks.map((link, index) => (
+          {navLinks.map((link, index) => (
             <a
               key={link.name}
               href={link.href}
@@ -60,10 +80,6 @@ const DashboardNavbar: React.FC = () => {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-400 transition-all duration-300 group-hover:w-full"></span>
             </a>
           ))}
-
-        </div>
-
-        {/* Mobile Menu Button */}
 
         {/* Mobile Menu Button */}
         <button
@@ -83,7 +99,7 @@ const DashboardNavbar: React.FC = () => {
         }`}
       >
         <div className={`backdrop-blur-sm border border-white/20 rounded-2xl p-6 space-y-4 ${scrolled ? "bg-white/20" : "bg-white/10"}`}>
-          {dashboardNavLinks.map((link, index) => (
+          {navLinks.map((link, index) => (
             <a
               key={link.name}
               href={link.href}
