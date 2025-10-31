@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Menu, X, Home, Info, ShoppingCart, Phone, ExternalLink } from "lucide-react";
+import { Menu, X, Home, Info, ShoppingCart, Phone, ExternalLink, LayoutDashboard } from "lucide-react";
 
 import { initHashConnect, connectToHashpack, disconnectFromHashpack, checkHashpackConnection } from "../utils/hedera";
 
@@ -9,7 +9,7 @@ const navLinks = [
   { name: "Home", href: "/", icon: <Home className="w-5 h-5" /> },
   { name: "About", href: "#about", icon: <Info className="w-5 h-5" /> },
   { name: "Contact", href: "#contact", icon: <Phone className="w-5 h-5" /> },
-  { name: "Dashboard", href: "/dashboard", icon: <Phone className="w-5 h-5" /> },
+  { name: "Dashboard", href: "/dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
 ];
 
 const Navbar: React.FC = () => {
