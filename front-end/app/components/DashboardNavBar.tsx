@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X, Home, ShoppingBag, LayoutDashboard, UserPlus, ExternalLink } from "lucide-react";
-import { initHashConnect, connectToHashpack, disconnectFromHashpack } from "../utils/hedera";
+import { initHashConnect, connectToHashpack, disconnectFromHashpack, getConnectedAccountID } from "../utils/hedera";
 
 interface DashboardNavbarProps {
   isRegistered: boolean;
@@ -10,31 +10,28 @@ interface DashboardNavbarProps {
 const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ isRegistered, isConnected }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
-  const navLinks = isRegistered
-    ? [
-        { name: "Home", href: "/", icon: <Home className="w-5 h-5" /> },
-        {
-          name: "Marketplace",
-          href: "/marketplace",
-          icon: <ShoppingBag className="w-5 h-5" />,
-        },
-        {
-          name: "Dashboard",
-          href: "/dashboard",
-          icon: <LayoutDashboard className="w-5 h-5" />,
-        },
-      ]
-    : [
-        { name: "Home", href: "/", icon: <Home className="w-5 h-5" /> },
-        {
-          name: "Register",
-          href: "/dashboard",
-          icon: <UserPlus className="w-5 h-5" />,
-        },
-      ];
+  const [accountId, setAccountId] = useState<string | null>(null);
 
   useEffect(() => {
+    const setupHashConnect = async () => {
+      const hc = await initHashConnect();
+      if (isConnected) {
+        setAccountId(getConnectedAccountID());
+      }
+
+      hc.pairingEvent.on((pairingData) => {
+        if (pairingData.accountIds && pairingData.accountIds.length > 0) {
+          setAccountId(pairingData.accountIds[0]);
+        }
+      });
+
+      hc.disconnectionEvent.on(() => {
+        setAccountId(null);
+      });
+    };
+
+    setupHashConnect();
+
     const handleScroll = () => {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       setScrolled(scrollTop > 50);
@@ -48,7 +45,7 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ isRegistered, isConne
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
-  }, []);
+  }, [isConnected]);
 
   const handleConnectWallet = async () => {
     await connectToHashpack(() => {}); // setConnected is handled by Navbar.tsx
@@ -171,7 +168,7 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ isRegistered, isConne
                 onClick={handleDisconnectWallet}
                 className="px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700"
               >
-                Disconnect Wallet
+                {accountId ? `Connected: ${accountId.substring(0, 6)}...` : "Disconnect Wallet"}
               </button>
             ) : (
               <button

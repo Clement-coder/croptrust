@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { registerFarmer } from "../../utils/hedera";
 
 export default function RegistrationForm({ onRegister }: { onRegister: () => void }) {
   const [formData, setFormData] = useState({
@@ -15,11 +16,17 @@ export default function RegistrationForm({ onRegister }: { onRegister: () => voi
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Add logic to interact with the FarmerRegistry smart contract
-    console.log(formData);
-    onRegister();
+    try {
+      // For now, metadataURI is empty. In a real app, this would be IPFS hash.
+      await registerFarmer(formData.fullName, formData.location, "");
+      console.log("Farmer registered successfully!");
+      onRegister();
+    } catch (error) {
+      console.error("Registration failed:", error);
+      // Optionally, show an error message to the user
+    }
   };
 
   return (

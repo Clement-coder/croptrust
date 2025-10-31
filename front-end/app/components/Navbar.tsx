@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X, Home, Info, ShoppingCart, Phone, ExternalLink, LayoutDashboard } from "lucide-react";
 
-import { initHashConnect, connectToHashpack, disconnectFromHashpack, checkHashpackConnection } from "../utils/hedera";
+import { initHashConnect, connectToHashpack, disconnectFromHashpack, checkHashpackConnection, getConnectedAccountID } from "../utils/hedera";
 
 const navLinks = [
   { name: "Home", href: "/", icon: <Home className="w-5 h-5" /> },
@@ -16,23 +16,53 @@ const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [accountId, setAccountId] = useState<string | null>(null);
 
   useEffect(() => {
-    const init = async () => {
-      await initHashConnect();
+    const setupHashConnect = async () => {
+      const hc = await initHashConnect();
       const connected = await checkHashpackConnection();
       setIsConnected(connected);
+      if (connected) {
+        setAccountId(getConnectedAccountID());
+      }
+
+      hc.pairingEvent.on((pairingData) => {
+        setIsConnected(true);
+        if (pairingData.accountIds && pairingData.accountIds.length > 0) {
+          setAccountId(pairingData.accountIds[0]);
+        }
+      });
+
+      hc.disconnectionEvent.on(() => {
+        setIsConnected(false);
+        setAccountId(null);
+      });
     };
 
-    init();
+    setupHashConnect();
+
+    const handleScroll = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      setScrolled(scrollTop > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
+    handleScroll(); // initial check
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, []);
 
   const handleConnectWallet = async () => {
-    await connectToHashpack(setIsConnected);
+    await connectToHashpack();
   };
 
   const handleDisconnectWallet = async () => {
-    await disconnectFromHashpack(setIsConnected);
+    await disconnectFromHashpack();
   };
 
   return (
@@ -71,7 +101,7 @@ const Navbar: React.FC = () => {
               onClick={handleDisconnectWallet}
               className="px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700"
             >
-              Disconnect Wallet
+              {accountId ? `Connected: ${accountId.substring(0, 6)}...` : "Disconnect Wallet"}
             </button>
           ) : (
             <button

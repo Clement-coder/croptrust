@@ -5,20 +5,38 @@ import DashboardNavBar from "../components/DashboardNavBar";
 import FarmerDashboard from "../components/dashboard/FarmerDashboard";
 import BuyerDashboard from "../components/dashboard/BuyerDashboard";
 import RegistrationForm from "../components/registration/RegistrationForm";
-import { checkHashpackConnection } from "../utils/hedera";
+import { checkHashpackConnection, isFarmerRegistered, getFarmerDetails, initHashConnect } from "../utils/hedera";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("farmer");
   const [isRegistered, setIsRegistered] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [farmerData, setFarmerData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkConnection = async () => {
+    const fetchData = async () => {
+      setLoading(true);
+      await initHashConnect();
       const connected = await checkHashpackConnection();
       setIsConnected(connected);
+
+      if (connected) {
+        const walletAddress = getConnectedAccountID();
+        if (walletAddress) {
+          const registered = await isFarmerRegistered();
+          setIsRegistered(registered);
+
+          if (registered) {
+            const details = await getFarmerDetails();
+            setFarmerData(details);
+          }
+        }
+      }
+      setLoading(false);
     };
 
-    checkConnection();
+    fetchData();
   }, []);
 
   // Dummy data for a user who is both a farmer and a buyer
@@ -32,8 +50,16 @@ export default function Dashboard() {
     wallet: "0x1234...5678"
   };
 
+  if (loading) {
+    return <div>Loading...</div>; // Or a spinner component
+  }
+
   if (!isRegistered) {
-    return <RegistrationForm onRegister={() => setIsRegistered(true)} />;
+    return (
+      <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center backdrop-blur-sm">
+        <RegistrationForm onRegister={() => setIsRegistered(true)} />
+      </div>
+    );
   }
 
   return (
@@ -66,7 +92,7 @@ export default function Dashboard() {
         </div>
 
         {activeTab === "farmer" ? (
-          <FarmerDashboard farmer={dummyUser} />
+          <FarmerDashboard farmer={farmerData || dummyUser} />
         ) : (
           <BuyerDashboard buyer={dummyUser} />
         )}

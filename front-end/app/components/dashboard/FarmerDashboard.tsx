@@ -133,44 +133,48 @@ export default function FarmerDashboard({ farmer }: FarmerDashboardProps) {
   };
 
   return (
-    <div className="p-4 sm:p-8 mx-auto mt-10 px-4 sm:px-6 bg-gradient-to-br from-green-50/50 via-emerald-50/50 to-teal-50/50 text-gray-800 min-h-screen">
-      <div className="sticky backdrop-blur-md top-20 z-50 rounded-2xl flex flex-col sm:flex-row items-center justify-between bg-white/30 py-3 px-6 shadow-lg">
-        <div className="text-center sm:text-left">
-          <h1 className="text-2xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">Farmer Dashboard</h1>
-          <p className="text-gray-600 text-md font-bold mt-1">Welcome back, {farmer.fullName}!</p>
-        </div>
-        <button onClick={() => setShowModal(true)} className="mt-4 sm:mt-0 px-4 py-2 sm:px-6 sm:py-3 group border border-green-600 cursor-pointer font-bold text-green-800 bg-green-500/10 rounded-2xl flex items-center justify-center shadow-lg hover:scale-105 transition-all duration-300 hover:bg-green-500/20">
-          <Plus className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-green-800 transition-transform duration-300 group-hover:rotate-90" />
-          <span className="transition-all duration-300 text-sm sm:text-base">List New Crop</span>
-        </button>
-      </div>
-      <div className="grid grid-cols-1 mt-8 md:grid-cols-5 gap-4 sm:gap-8">
-        <div className="md:col-span-2">
-          <ProfileCard user={farmer} role="farmer" />
-        </div>
-        <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
-          <StatsCard label="Total Crops Listed" value={crops.length} icon="wheat" />
-          <StatsCard label="Total Earnings" value={totalEarnings} icon="dollar" isCurrency />
-          <StatsCard label="Total Orders" value={totalOrders} icon="cart" />
-        </div>
-      </div>
-      <div className="mt-12">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">Your Crop Listings</h2>
-        </div>
-        {crops.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {crops.map((crop) => (
-              <CropCard key={crop.id} crop={{...crop, farmerName: farmer.farmName, location: farmer.location}} action="edit" onEdit={() => handleEditCrop(crop)} onDelete={() => handleDeleteClick(crop)} />
-            ))}
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="sticky top-0 z-10 backdrop-blur-md rounded-2xl flex flex-col sm:flex-row items-center justify-between bg-white/80 py-4 px-6 shadow-lg mb-8">
+          <div className="text-center sm:text-left">
+            <h1 className="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">Farmer Dashboard</h1>
+            <p className="text-gray-600 text-lg font-bold mt-1">Welcome back, {farmer.fullName}!</p>
           </div>
-        ) : (
-          <div className="text-center py-16 border-2 border-dashed border-gray-300 rounded-2xl bg-white/50">
-            <Wheat className="w-16 h-16 mx-auto text-gray-400" />
-            <h3 className="mt-4 text-xl font-bold text-gray-600">No crops listed yet.</h3>
-            <p className="mt-2 text-gray-500">Click the &quot;List New Crop&quot; button to get started.</p>
+          <button onClick={() => setShowModal(true)} className="mt-4 sm:mt-0 px-6 py-3 group border border-green-600 cursor-pointer font-bold text-green-800 bg-green-500/10 rounded-2xl flex items-center justify-center shadow-lg hover:scale-105 transition-all duration-300 hover:bg-green-500/20">
+            <Plus className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-green-800 transition-transform duration-300 group-hover:rotate-90" />
+            <span className="transition-all duration-300 text-base sm:text-lg">List New Crop</span>
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 lg:gap-8">
+          <div className="md:col-span-2">
+            <ProfileCard user={farmer} role="farmer" />
           </div>
-        )}
+          <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <StatsCard label="Total Crops Listed" value={crops.length} icon="wheat" />
+            <StatsCard label="Total Earnings" value={totalEarnings} icon="dollar" isCurrency />
+            <StatsCard label="Total Orders" value={totalOrders} icon="cart" />
+          </div>
+        </div>
+
+        <div className="mt-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">Your Crop Listings</h2>
+          </div>
+          {crops.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {crops.map((crop) => (
+                <CropCard key={crop.id} crop={{...crop, farmerName: farmer.farmName, location: farmer.location}} action="edit" onEdit={() => handleEditCrop(crop)} onDelete={() => handleDeleteClick(crop)} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 border-2 border-dashed border-gray-300 rounded-2xl bg-white/50">
+              <Wheat className="w-16 h-16 mx-auto text-gray-400" />
+              <h3 className="mt-4 text-xl font-bold text-gray-600">No crops listed yet.</h3>
+              <p className="mt-2 text-gray-500">Click the &quot;List New Crop&quot; button to get started.</p>
+            </div>
+          )}
+        </div>
       </div>
       {showModal && <PostCropModal onClose={handleCloseModal} onCropPosted={handleCropPosted} crop={editingCrop} />}
       {deletingCrop && <ConfirmationModal message={`Are you sure you want to delete "${deletingCrop.name}"?`} onConfirm={handleConfirmDelete} onCancel={handleCancelDelete} />}
