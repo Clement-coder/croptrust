@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { ArrowRight, Shield, DollarSign, Wheat, Star, CheckCircle, ArrowLeftRight, Zap } from 'lucide-react';
 import styles from './HeroSection.module.css';

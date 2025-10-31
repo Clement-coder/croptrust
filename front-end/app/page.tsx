@@ -1,4 +1,4 @@
-import Navbar from "./components/NavBar copy"
+import Navbar from "./components/Navbar"
 import HeroSection from "./components/HeroSection"
 import HomeComponents from "./components/HomeComponents"
 const page = () => {

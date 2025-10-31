@@ -4,7 +4,6 @@ import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
-import { headers } from 'next/headers' // added
 import ContextProvider from '@/context'
 
 export const metadata: Metadata = {
@@ -12,19 +11,15 @@ export const metadata: Metadata = {
   description: 'Powered by Reown'
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode
 }>) {
-
-  const headersList = await headers()
-  const cookies = headersList.get('cookie')
-
   return (
     <html lang="en">
       <body className={inter.className} suppressHydrationWarning={true}>
-        <ContextProvider cookies={cookies}>{children}</ContextProvider>
+        <ContextProvider>{children}</ContextProvider>
       </body>
     </html>
   )

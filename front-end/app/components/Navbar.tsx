@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { Menu, X, Home, Info, ShoppingCart, Phone, ExternalLink } from "lucide-react";
-import { useAccount } from "wagmi";
 
 const navLinks = [
   { name: "Home", href: "/", icon: <Home className="w-5 h-5" /> },
@@ -15,8 +14,6 @@ const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isClient, setIsClient] = useState(false); // New state variable
-
-  const { isConnected } = useAccount();
 
   // Set isClient to true after component mounts
   useEffect(() => {
@@ -71,22 +68,6 @@ const Navbar: React.FC = () => {
             </a>
           ))}
 
-          {/* Web3 Connect Button */}
-          {isClient && <w3m-button />} {/* Render only on client */}
-        </div>
-
-        {/* Web3 Badge for Desktop */}
-        <div
-          className={`hidden md:flex items-center gap-2 rounded-full px-4 py-2 animate-float-badge transition-colors duration-300 ${
-            scrolled
-              ? "bg-green-500/20 border border-green-300/30"
-              : "bg-green-500/10 border border-green-200/20"
-          }`}
-        >
-          <ExternalLink className={`w-4 h-4 ${scrolled ? "text-green-800" : "text-white"}`} />
-          <span className={`text-sm font-medium transition-colors duration-300 ${scrolled ? "text-green-800" : "text-white"}`}>
-            Web3 Powered
-          </span>
         </div>
 
         {/* Mobile Menu Button */}
@@ -118,23 +99,6 @@ const Navbar: React.FC = () => {
               {link.icon} {link.name}
             </a>
           ))}
-
-          {/* Mobile Web3 Badge */}
-          <div
-            className={`flex items-center justify-center gap-2 rounded-full px-4 py-3 transition-colors duration-300 ${
-              scrolled
-                ? "bg-green-500/20 border border-green-300/30"
-                : "bg-green-500/10 border border-green-200/20"
-            }`}
-          >
-            <ExternalLink className={`w-4 h-4 ${scrolled ? "text-green-800" : "text-white"}`} />
-            <span className={`text-sm font-medium transition-colors duration-300 ${scrolled ? "text-green-800" : "text-white"}`}>
-              Web3 Powered
-            </span>
-          </div>
-
-          {/* Mobile Web3 Button */}
-          <div className="flex justify-center mt-4">{isClient && <w3m-button />}</div> {/* Render only on client */}
         </div>
       </div>
     </nav>
