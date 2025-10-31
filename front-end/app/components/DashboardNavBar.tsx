@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Menu, X, Home, ShoppingBag, LayoutDashboard, UserPlus } from "lucide-react";
+import { Menu, X, Home, ShoppingBag, LayoutDashboard, UserPlus, ExternalLink } from "lucide-react";
 
 interface DashboardNavbarProps {
   isRegistered: boolean;
@@ -67,6 +67,7 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ isRegistered }) => {
         </div>
 
         {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-8">
           {navLinks.map((link, index) => (
             <a
               key={link.name}
@@ -80,6 +81,21 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ isRegistered }) => {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-400 transition-all duration-300 group-hover:w-full"></span>
             </a>
           ))}
+        </div>
+
+        {/* Web3 Badge for Desktop */}
+        <div
+          className={`hidden md:flex items-center gap-2 rounded-full px-4 py-2 animate-float-badge transition-colors duration-300 ${
+            scrolled
+              ? "bg-green-500/20 border border-green-600"
+              : "bg-green-500/10 border border-green-600"
+          }`}
+        >
+          <ExternalLink className={`w-4 h-4 ${scrolled ? "text-green-800" : "text-green-800"}`} />
+          <span className={`text-sm font-medium transition-colors duration-300 ${scrolled ? "text-green-800" : "text-green-800"}`}>
+            Web3 Powered
+          </span>
+        </div>
 
         {/* Mobile Menu Button */}
         <button
@@ -110,6 +126,20 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ isRegistered }) => {
               {link.icon} {link.name}
             </a>
           ))}
+
+          {/* Mobile Web3 Badge */}
+          <div
+            className={`flex items-center justify-center gap-2 rounded-full px-4 py-3 transition-colors duration-300 ${
+              scrolled
+                ? "bg-green-500/20 border border-green-600"
+                : "bg-green-500/10 border border-green-600"
+            }`}
+          >
+            <ExternalLink className={`w-4 h-4 ${scrolled ? "text-green-800" : "text-green-800"}`} />
+            <span className={`text-sm font-medium transition-colors duration-300 ${scrolled ? "text-green-800" : "text-green-800"}`}>
+              Web3 Powered
+            </span>
+          </div>
         </div>
       </div>
     </nav>
